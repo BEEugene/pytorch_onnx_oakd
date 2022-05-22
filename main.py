@@ -29,7 +29,7 @@ model = smp.Unet(
     decoder_attention_type='scse' # should be disabled if not 0.2.1
 ).to(device)
 
-
+# model.encoder.set_swish(memory_efficient=False)
 # For 300x300 frames
 model.eval()
 IMAGE_HEIGHT = 320
@@ -139,8 +139,10 @@ prediction_mask = cv2.resize(prediction_mask, (w, h))
 prediction_mask[prediction_mask < 0.5] = 0
 prediction_mask[prediction_mask >= 0.5] = 1
 plt.subplot(1,2,1)
-plt.imshow(outputs)
+plt.imshow(prediction_mask)
 plt.subplot(1,2,2)
+ort_outs_new[0][ort_outs_new[0] < 0.5] = 0
+ort_outs_new[0][ort_outs_new[0] >= 0.5] = 1
 plt.imshow(ort_outs_new[0][0,0,:,:])
 plt.show()
 
